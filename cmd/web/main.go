@@ -58,16 +58,14 @@ func main() {
 		Blogs: &postgresql.BlogModel{DB: db},
 	}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/createblog", app.createBlogForm)
-	mux.HandleFunc("/blog-add", app.createBlog)
-	mux.HandleFunc("/blogs", app.blogs)
+	//Create a custom server
+	srv := &http.Server{
+		Addr:    ":4000",
+		Handler: app.routes(),
+	}
+
 	log.Println("Starting Server on port :4000")
-	//create a fileserver to serve static files
-	fs := http.FileServer(http.Dir("./ui/static/"))
-	mux.Handle("/static/", http.StripPrefix("/static/", fs))
-	err = http.ListenAndServe(":4000", mux)
+	err = srv.ListenAndServe()
 	log.Fatal(err)
 
 }
