@@ -62,7 +62,7 @@ func main() {
 	mux.HandleFunc("/", app.home)
 	mux.HandleFunc("/createblog", app.createBlogForm)
 	mux.HandleFunc("/blog-add", app.createBlog)
-	// mux.HandleFunc("/blogs", app.blogs)
+	mux.HandleFunc("/blogs", app.blogs)
 	log.Println("Starting Server on port :4000")
 	err = http.ListenAndServe(":4000", mux)
 	log.Fatal(err)
