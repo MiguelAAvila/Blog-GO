@@ -64,6 +64,9 @@ func main() {
 	mux.HandleFunc("/blog-add", app.createBlog)
 	mux.HandleFunc("/blogs", app.blogs)
 	log.Println("Starting Server on port :4000")
+	//create a fileserver to serve static files
+	fs := http.FileServer(http.Dir("./ui/static/"))
+	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 	err = http.ListenAndServe(":4000", mux)
 	log.Fatal(err)
 

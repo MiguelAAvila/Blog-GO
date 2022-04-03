@@ -138,6 +138,10 @@ func (app *application) createBlog(w http.ResponseWriter, r *http.Request) {
 	//Check if errors in the map
 	if len(errors) > 0 {
 		ts, err := template.ParseFiles("./ui/html/form.page.tmpl")
+		err = ts.Execute(w, &templateData{
+			ErrorsFromForm: errors,
+			FormData:       r.PostForm,
+		})
 		if err != nil {
 			log.Println(err.Error())
 			http.Error(w,
@@ -145,10 +149,7 @@ func (app *application) createBlog(w http.ResponseWriter, r *http.Request) {
 				http.StatusInternalServerError)
 			return
 		}
-		err = ts.Execute(w, &templateData{
-			ErrorsFromForm: errors,
-			FormData:       r.PostForm,
-		})
+
 		if err != nil {
 			log.Panicln(err.Error())
 			http.Error(w,
