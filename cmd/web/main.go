@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	_ "github.com/lib/pq" //Third party package
+	"mavila_frosado.net/test1/pkg/models/postgresql"
 )
 
 // Database Function
@@ -40,17 +40,7 @@ func setUpDB() (*sql.DB, error) {
 
 //Dependencies Injection (passing)
 type application struct {
-	db *sql.DB
-}
-
-type Blog struct {
-	ID           int
-	FirstName    string
-	LastName     string
-	Email        string
-	Subject      string
-	Message      string
-	Date_Created time.Time
+	Blogs *postgresql.BlogModel
 }
 
 func main() {
@@ -65,14 +55,14 @@ func main() {
 	//A must before exiting
 	defer db.Close()
 	app := &application{
-		db: db,
+		Blogs: &postgresql.BlogModel{DB: db},
 	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", app.home)
 	mux.HandleFunc("/createblog", app.createBlogForm)
 	mux.HandleFunc("/blog-add", app.createBlog)
-	mux.HandleFunc("/blogs", app.blogs)
+	// mux.HandleFunc("/blogs", app.blogs)
 	log.Println("Starting Server on port :4000")
 	err = http.ListenAndServe(":4000", mux)
 	log.Fatal(err)

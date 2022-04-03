@@ -50,6 +50,7 @@ func (app *application) createBlogForm(w http.ResponseWriter, r *http.Request) {
 
 }
 
+/*
 //blog Page
 func (app *application) blogs(w http.ResponseWriter, r *http.Request) {
 	//Header part of tmpl
@@ -149,6 +150,7 @@ func (app *application) blogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+*/
 
 //Extract, Validate and Write to the blogs table
 func (app *application) createBlog(w http.ResponseWriter, r *http.Request) {
@@ -204,18 +206,16 @@ func (app *application) createBlog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//Write to the database
-	query := `
-	INSERT INTO blogs(first_name, last_name, email, subject, message)
-	VALUES ($1, $2, $3, $4, $5)
-	`
-	_, err = app.db.Exec(query, firstname, lastname, email, subject, message)
+	//inser a blog
+	id, err := app.Blogs.Insert(firstname, lastname, email, subject, message)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w,
 			http.StatusText(http.StatusInternalServerError),
 			http.StatusInternalServerError)
+		return
 	}
+	fmt.Fprintf(w, "Row with id %d has been inserted.", id)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	return
 }
