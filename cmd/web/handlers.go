@@ -60,6 +60,10 @@ func (app *application) blogs(w http.ResponseWriter, r *http.Request) {
 			http.StatusText(http.StatusInternalServerError),
 			http.StatusInternalServerError)
 	}
+	//instance of templateData
+	data := &templateData{
+		Blogs: blogs,
+	}
 
 	//Body part of tmpl
 	ts, err := template.ParseFiles("./ui/html/blog.page.tmpl")
@@ -70,7 +74,8 @@ func (app *application) blogs(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError)
 		return
 	}
-	err = ts.Execute(w, blogs)
+
+	err = ts.Execute(w, data)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -132,7 +137,25 @@ func (app *application) createBlog(w http.ResponseWriter, r *http.Request) {
 	}
 	//Check if errors in the map
 	if len(errors) > 0 {
-		fmt.Fprint(w, errors)
+		ts, err := template.ParseFiles("./ui/html/form.page.tmpl")
+		if err != nil {
+			log.Println(err.Error())
+			http.Error(w,
+				http.StatusText(http.StatusInternalServerError),
+				http.StatusInternalServerError)
+			return
+		}
+		err = ts.Execute(w, &templateData{
+			ErrorsFromForm: errors,
+			FormData:       r.PostForm,
+		})
+		if err != nil {
+			log.Panicln(err.Error())
+			http.Error(w,
+				http.StatusText(http.StatusInternalServerError),
+				http.StatusInternalServerError)
+			return
+		}
 		return
 	}
 
