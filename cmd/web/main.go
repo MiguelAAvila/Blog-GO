@@ -32,6 +32,7 @@ func setUpDB(dsn string) (*sql.DB, error) {
 //Dependencies Injection (passing)
 type application struct {
 	Blogs *postgresql.BlogModel
+	addr  string
 }
 
 func main() {
@@ -52,6 +53,7 @@ func main() {
 	defer db.Close()
 	app := &application{
 		Blogs: &postgresql.BlogModel{DB: db},
+		addr:  *addr,
 	}
 
 	//Create a custom server

@@ -10,4 +10,5 @@ type templateData struct {
 	Blogs          []*models.Blog
 	ErrorsFromForm map[string]string
 	FormData       url.Values
+	Port           string
 }

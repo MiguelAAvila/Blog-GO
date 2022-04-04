@@ -14,6 +14,8 @@ import (
 //Home Page
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	ts, err := template.ParseFiles("./ui/html/index.page.tmpl")
+	port := app.addr
+
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w,
@@ -21,7 +23,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError)
 		return
 	}
-	err = ts.Execute(w, nil)
+	data := &templateData{
+		Port: port,
+	}
+	err = ts.Execute(w, data)
 	if err != nil {
 		log.Panicln(err.Error())
 		http.Error(w,
@@ -53,6 +58,7 @@ func (app *application) createBlogForm(w http.ResponseWriter, r *http.Request) {
 //blog Page
 func (app *application) blogs(w http.ResponseWriter, r *http.Request) {
 	blogs, err := app.Blogs.Read()
+	port := app.addr
 
 	if err != nil {
 		log.Panicln(err.Error())
@@ -63,6 +69,7 @@ func (app *application) blogs(w http.ResponseWriter, r *http.Request) {
 	//instance of templateData
 	data := &templateData{
 		Blogs: blogs,
+		Port:  port,
 	}
 
 	//Body part of tmpl
