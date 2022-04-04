@@ -4,16 +4,16 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
-	"text/template"
 	"unicode/utf8"
 )
 
 //Home Page
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	ts, err := template.ParseFiles("./ui/html/index.page.tmpl")
+	ts, err := template.ParseFiles("./ui/html/index.tmpl")
 	port := app.addr
 
 	if err != nil {
@@ -37,7 +37,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 //Displays SingUp Form
 func (app *application) createBlogForm(w http.ResponseWriter, r *http.Request) {
-	ts, err := template.ParseFiles("./ui/html/form.page.tmpl")
+	ts, err := template.ParseFiles("./ui/html/form.tmpl")
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w,
@@ -73,7 +73,7 @@ func (app *application) blogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Body part of tmpl
-	ts, err := template.ParseFiles("./ui/html/blog.page.tmpl")
+	ts, err := template.ParseFiles("./ui/html/blog.tmpl")
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w,
