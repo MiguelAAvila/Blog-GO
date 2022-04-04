@@ -4,7 +4,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"flag"
 	"log"
 	"net/http"
 
@@ -13,16 +13,7 @@ import (
 )
 
 // Database Function
-func setUpDB() (*sql.DB, error) {
-	const (
-		host     = "localhost"
-		port     = 5432
-		user     = "dbtest"
-		password = "dbtest"
-		dbname   = "dbtest"
-	)
-
-	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+func setUpDB(dsn string) (*sql.DB, error) {
 
 	//Establish connection to the dababase
 	db, err := sql.Open("postgres", dsn)
@@ -44,8 +35,13 @@ type application struct {
 }
 
 func main() {
+	// create a command line flag for the port
+	addr := flag.String("addr", ":8080", "HTTP network address")
+	dsn := flag.String("dsn", "postgres://dbtest:dbtest@localhost/dbtest?sslmode=disable", "PostgreSQL DSN (Data Source Name)")
+
+	flag.Parse()
 	//create and initialize
-	var db, err = setUpDB()
+	var db, err = setUpDB(*dsn)
 
 	//Check if errors
 	if err != nil {
@@ -60,11 +56,11 @@ func main() {
 
 	//Create a custom server
 	srv := &http.Server{
-		Addr:    ":4000",
+		Addr:    *addr,
 		Handler: app.routes(),
 	}
 
-	log.Println("Starting Server on port :4000")
+	log.Printf("Starting Server on port %s", *addr)
 	err = srv.ListenAndServe()
 	log.Fatal(err)
 
